@@ -8,6 +8,7 @@ import Skills from './steps/Skills';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Final from './steps/Final';
+import Dropdown from './common/Dropdown';
 
 const Form = () => {
     const { step, next, prev, goto } = useHandleForm(["0", "1", "2", "3"]);
@@ -15,6 +16,7 @@ const Form = () => {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState("");
     const [displayedResult, setDisplayedResult] = useState("");
+    const [selectedOption, setSelectedOption] = useState({ value: 'openai: gpt-3.5-turbo-16k', label: 'openai: gpt-3.5-turbo-16k' });
 
     const [values, setValues] = useState({
         role: "",
@@ -26,6 +28,26 @@ const Form = () => {
 
     const controls = useAnimation();
 
+    const dropdownOptions = [
+        { value: 'openai: gpt-3.5-turbo-16k', label: 'openai: gpt-3.5-turbo-16k' },
+        { value: 'openai: gpt-3.5-turbo', label: 'openai: gpt-3.5-turbo' },
+        { value: 'openai: gpt-4', label: 'openai: gpt-4' },
+        { value: 'openai: gpt-4-0613', label: 'openai: gpt-4-0613' },
+        { value: 'openai: gpt-4-1106-preview', label: 'openai: gpt-4-1106-preview' },
+        { value: 'openai: gpt-3.5-turbo-1106', label: 'openai: gpt-3.5-turbo-1106' },
+        { value: 'anthropic: claude-instant-1', label: 'anthropic: claude-instant-1' },
+        { value: 'anthropic: claude-2', label: 'anthropic: claude-2' },
+        { value: 'meta-llama: Llama-2-7b-chat-hf', label: 'meta-llama: Llama-2-7b-chat-hf' },
+        { value: 'meta-llama: Llama-2-13b-chat-hf', label: 'meta-llama: Llama-2-13b-chat-hf' },
+        { value: 'meta-llama: Llama-2-70b-chat-hf', label: 'meta-llama: Llama-2-70b-chat-hf' },
+        { value: 'mistralai: Mistral-7B-Instruct-v0.1', label: 'mistralai: Mistral-7B-Instruct-v0.1' },
+        { value: 'azure: gpt-4-1106-preview', label: 'azure: gpt-4-1106-preview' },
+        { value: 'azure: gpt-3.5-turbo', label: 'azure: gpt-3.5-turbo' },
+        { value: 'azure: gpt-3.5-turbo-16k', label: 'azure: gpt-3.5-turbo-16k' },
+        { value: 'google: gemini-pro', label: 'google: gemini-pro' }
+    ]
+
+
     useEffect(() => {
         controls.start({ opacity: 1, x: 0 });
     }, [step]);
@@ -33,13 +55,14 @@ const Form = () => {
     const handleFetch = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8080/api/generate', {
+            const response = await fetch('https://vast-erin-cricket-wear.cyclic.app/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', accept: 'application/json' },
                 body: JSON.stringify({
                     role,
                     industry,
-                    skills
+                    skills,
+                    model:selectedOption.value
                 })
             });
 
@@ -86,6 +109,14 @@ const Form = () => {
     return (
         <div className="flex w-screen h-screen">
             <div className="flex h-screen w-1/2 md:w-1/2 rounded-xl flex-col  justify-center">
+                <div className="w-1/3 relative bottom-36 left-12 flex flex-col" >
+                    <label className="text-lg font-semibold mb-2 block">Select Model:</label>
+                    <Dropdown
+                        options={dropdownOptions}
+                        value={selectedOption}
+                        onChange={(selected) => setSelectedOption(selected)}
+                    />
+                </div>
                 {step === 0 && <JobRole values={values} setValues={setValues} />}
                 {step === 1 && <Industry values={values} setValues={setValues} />}
                 {step === 2 && <Skills values={values} setValues={setValues} />}
@@ -154,7 +185,7 @@ const Form = () => {
                 )}
                 {loading && (
                     <SkeletonTheme color="#202020" highlightColor="#807f7f">
-                        <p>
+                        <p className="p-3" >
                             <Skeleton height={25} width={'100vh'} count={20} duration={2} />
                         </p>
                     </SkeletonTheme>
