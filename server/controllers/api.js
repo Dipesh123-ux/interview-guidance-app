@@ -2,7 +2,7 @@ const axios = require("axios");
 
 exports.generateResponse = async (req, res) => {
   try {
-    const { role, industry, skills ,model} = req.body;
+    const { role, industry, skills,model} = req.body;
     const apiKey = process.env.API_KEY; 
 
     const response = await axios.post(
@@ -19,7 +19,7 @@ exports.generateResponse = async (req, res) => {
             content: "I have an interview for the position {{role}} in an {{industry}}. I have these {{skills}}. Can you please guide me for the interview and give me some points which I can take care in the interviews. Also give me the list of most asked questions for that particular position. Please make all the things very organised",
           },
         ],
-        model: { name: model },
+        model: { name: "openai/gpt-3.5-turbo" },
         variables: [
           { name: "role", value: role },
           { name: "industry", value: industry },
