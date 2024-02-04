@@ -55,7 +55,7 @@ const Form = () => {
     const handleFetch = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8080/api/generate', {
+            const response = await fetch('https://vast-erin-cricket-wear.cyclic.app/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', accept: 'application/json' },
                 body: JSON.stringify({
